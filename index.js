@@ -62,8 +62,24 @@ db.connect((err) => {
     console.log('Conectado a la base de datos MySQL con éxito.');
 });
 
+// Función para crear las tablas automáticamente
+const inicializarBaseDeDatos = () => {
+  const tablas = [
+    `CREATE TABLE IF NOT EXISTS usuarios (id INT AUTO_INCREMENT PRIMARY KEY, nombre VARCHAR(100), email VARCHAR(100) UNIQUE, password VARCHAR(255))`,
+    `CREATE TABLE IF NOT EXISTS categorias (id INT AUTO_INCREMENT PRIMARY KEY, nombre_categoria VARCHAR(50))`,
+    `CREATE TABLE IF NOT EXISTS transacciones (id INT AUTO_INCREMENT PRIMARY KEY, usuario_id INT, categoria_id INT, monto DECIMAL(10,2), tipo ENUM('ingreso', 'egreso'), descripcion TEXT, fecha DATE, FOREIGN KEY (usuario_id) REFERENCES usuarios(id), FOREIGN KEY (categoria_id) REFERENCES categorias(id))`,
+    `INSERT IGNORE INTO categorias (id, nombre_categoria) VALUES (1, 'Comida'), (2, 'Hogar'), (3, 'Transporte'), (4, 'Ingresos'), (5, 'Ocio')`
+  ];
 
+  tablas.forEach(query => {
+    db.query(query, (err, result) => {
+      if (err) console.error("Error:", err.message);
+      else console.log("Tabla/Dato verificado correctamente");
+    });
+  });
+};
 
+inicializarBaseDeDatos();
 
 
 
